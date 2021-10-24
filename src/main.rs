@@ -13,12 +13,18 @@ async fn main() {
     let items_db: ItemsDb = Arc::new(Mutex::new(HashMap::new()));
     let root = warp::path::end().map(|| "Welcome to my warp server!");
     let shopping_list_items_route = warp::path("shopping_list_items")
+        .and(warp::get())
+        .and(with_items_db(items_db.clone()))
+        .and_then(handlers::shopping_list_items_get_handler);
+
+    let shopping_list_item_route = warp::path("shopping_list_item")
         .and(warp::post())
         .and(warp::body::json())
         .and(with_items_db(items_db.clone()))
         .and_then(handlers::shopping_list_item_post_handler);
     let routes = root
         .or(shopping_list_items_route)
+        .or(shopping_list_item_route)
         .with(warp::cors().allow_any_origin());
 
     warp::serve(routes).run(([127, 0, 0, 1], 5000)).await;
