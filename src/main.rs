@@ -15,13 +15,17 @@ async fn main() {
     let shopping_list_items_route = warp::path("shopping_list_items")
         .and(warp::get())
         .and(with_items_db(items_db.clone()))
-        .and_then(handlers::shopping_list_items_get_handler);
+        .and_then(handlers::get_shopping_list_items);
 
     let shopping_list_item_route = warp::path("shopping_list_item")
         .and(warp::post())
         .and(warp::body::json())
         .and(with_items_db(items_db.clone()))
-        .and_then(handlers::shopping_list_item_post_handler);
+        .and_then(handlers::create_shopping_list_item)
+        .or(warp::path!("shopping_list_item" / usize)
+            .and(warp::get())
+            .and(with_items_db(items_db.clone()))
+            .and_then(handlers::get_shopping_list_item_by_id));
     let routes = root
         .or(shopping_list_items_route)
         .or(shopping_list_item_route)
