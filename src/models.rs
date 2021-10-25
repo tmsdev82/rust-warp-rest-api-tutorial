@@ -19,3 +19,11 @@ pub struct ShoppingListItem {
     pub description: String,
     pub price: f32,
 }
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct UpdateShoppingListItem {
+    pub name: Option<String>,
+    pub item_type: Option<ShoppingListItemType>,
+    pub description: Option<String>,
+    pub price: Option<f32>,
+}
