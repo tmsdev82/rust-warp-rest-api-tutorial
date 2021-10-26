@@ -106,3 +106,15 @@ pub async fn update_shopping_list_item_by_id(
         StatusCode::OK,
     ))
 }
+
+pub async fn delete_shopping_list_item_by_id(id: usize, items_db: ItemsDb) -> Result<impl Reply> {
+    let mut local_db = items_db.lock().await;
+
+    println!("deleting shopping list item with id: {}", id);
+    local_db.remove(&id);
+
+    Ok(reply::with_status(
+        reply::html("delete success"),
+        StatusCode::OK,
+    ))
+}
